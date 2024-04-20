@@ -50,7 +50,7 @@ function setRoomToWaiting(roomId: string) {
   );
 }
 
-export const VideoPlayer = ({
+const VideoPlayer = ({
   videoTrack,
   style,
 }: {
