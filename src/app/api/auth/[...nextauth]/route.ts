@@ -1,6 +1,6 @@
-//import { handlers } from "@/app/auth" // Referring to the auth.ts we just created
-import NextAuth, { AuthOptions } from "next-auth"
-import GoogleProvider from "next-auth/providers/google"
+import { db } from "@/lib/db";
+import NextAuth, { AuthOptions } from "next-auth";
+import GoogleProvider from "next-auth/providers/google";
 
 export const authOptions: AuthOptions = {
   // Configure one or more authentication providers
@@ -12,33 +12,59 @@ export const authOptions: AuthOptions = {
   ],
   callbacks: {
     async signIn({ user }) {
-      const dbUser = await db.employee.findFirst({
+      const dbUser = await db.user.findFirst({
         where: {
-          email: user.email as string
+          email: user.email as string,
+        },
+      });
+      if (dbUser) {
+        if (dbUser.name != user.name || dbUser.pfp == null) {
+          await db.user.update({
+            where: {
+              id: dbUser.id,
+            },
+            data: {
+              name: user.name as string,
+              pfp: user.image,
+            },
+          });
         }
-      })
-      if(dbUser) {
-        if (dbUser.email.endsWith("@dartmouth.edu")) return true;
+        
+        return true;
+      } else if (
+        user.email!.endsWith("@dartmouth.edu") ||
+        user.email!.endsWith("@college.harvard.edu")
+      ) {
+        await db.user.create({
+          data: {
+            email: user.email!,
+            name: user.name as string,
+            pfp: user.image,
+          },
+        });
+
+        return true;
       }
+
       return false;
     },
     async session({ session, token, user }) {
-      if (!session.user || !session.user.email) return session
+      if (!session.user || !session.user.email) return session;
 
       const dbUser = await db.user.findUnique({
         where: {
-          email: session.user?.email as string
-        }
-      })
+          email: session.user?.email as string,
+        },
+      });
 
-      session.user = { ...session.user, ...dbUser }
+      session.user = { ...session.user, ...dbUser };
 
-      return session
-    }
+      return session;
+    },
   },
-  secret: process.env.SECRET
-}
+  secret: process.env.AUTH_SECRET,
+};
 
-const handler = NextAuth(authOptions)
+const handler = NextAuth(authOptions);
 
-export { handler as GET, handler as POST }
+export { handler as GET, handler as POST };
