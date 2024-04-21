@@ -9,7 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "next-auth": "^5.0.0-beta.16",
+    "next-auth": "^4.22.1",
     "agora-extension-ai-denoiser": "^1.1.0",
     "agora-extension-spatial-audio": "1.0.0-beta1",
     "agora-extension-virtual-background": "^1.2.0",
