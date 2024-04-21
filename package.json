@@ -4,11 +4,13 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "yarn db && next build",
+    "db": "yarn prisma generate && yarn prisma db push",
     "start": "next start",
     "lint": "next lint"
   },
   "dependencies": {
+    "@prisma/client": "5",
     "next-auth": "^4.22.1",
     "agora-extension-ai-denoiser": "^1.1.0",
     "agora-extension-spatial-audio": "1.0.0-beta1",
@@ -21,9 +23,12 @@
     "mongoose": "^6.8.1",
     "next": "14.2.2",
     "react": "^18",
-    "react-dom": "^18"
+    "react-dom": "^18",
+    "jotai": "^2.2.2"
   },
   "devDependencies": {
+    "@swc-jotai/react-refresh": "^0.0.8",
+    "prisma": "5",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
