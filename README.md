@@ -1,1 +1,1 @@
-See [https://github.com/arulandu/socap](https://devpost.com/software/socap-qbnmed)
+See [devpost](https://devpost.com/software/socap-qbnmed)
